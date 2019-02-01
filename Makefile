@@ -1,6 +1,6 @@
 default: build
 
-IMAGE_NAME=vagner/vscode
+IMAGE_NAME=vagnersx/frontend-vscode
 CONTAINER_NAME=`echo $(IMAGE_NAME) | sed 's/\//_/'`
 
 build: ./docker/Dockerfile
@@ -9,7 +9,7 @@ build: ./docker/Dockerfile
 run:
 	docker run -itd --rm \
 	--name=$(CONTAINER_NAME) \
-    -h $(CONTAINER_NAME) \
+	-h $(CONTAINER_NAME) \
 	-e CODEPATH="${PWD}" \
 	-e USERID=`id -u` \
 	-e USERNAME=`id -un` \
@@ -19,6 +19,3 @@ run:
 	-v $(CONTAINER_NAME):/home/developer/ \
 	-v ${HOME}:${HOME} \
 	$(IMAGE_NAME)
-
-test:
-	echo $(CONTAINER_NAME)
