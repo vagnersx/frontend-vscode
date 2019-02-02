@@ -22,6 +22,8 @@ RUN apt update -qq && apt install -y --no-install-recommends libcanberra-gtk-mod
     libnss3-dev libxtst6 \
     code=$VSCODE_VERSION
 
+RUN apt install -y git
+
 # Customizacoes no vscode
 RUN su ${CONTAINER_USERNAME} -c "code --install-extension formulahendry.terminal"
 RUN su ${CONTAINER_USERNAME} -c "code --install-extension peterjausovec.vscode-docker"
