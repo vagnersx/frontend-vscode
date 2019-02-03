@@ -7,11 +7,6 @@ ENV CONTAINER_USERNAME developer
 ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN true
 
-# Cria usuario do container
-RUN useradd -m -s /bin/bash ${CONTAINER_USERNAME}
-RUN apt update -qq && apt install sudo
-RUN echo "${CONTAINER_USERNAME} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${CONTAINER_USERNAME}
-
 # Instalando vscode e suas dependencias
 RUN apt update -qq && apt install -y --no-install-recommends curl gnupg ca-certificates
 RUN curl -sSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
@@ -21,14 +16,22 @@ RUN apt update -qq && apt install -y --no-install-recommends libcanberra-gtk-mod
     libcanberra-gtk3-module libxss1 libgconf-2.4 \
     libnss3-dev libxtst6 \
     code=$VSCODE_VERSION
+# Customizacoes no vscode
+RUN mkdir -p /custom/config /custom/extensions
+RUN code --install-extension formulahendry.terminal      --user-data-dir /custom/config --extensions-dir /custom/extensions
+RUN code --install-extension peterjausovec.vscode-docker --user-data-dir /custom/config --extensions-dir /custom/extensions
+COPY ./custom/settings.json /custom/config/User/settings.json
+# Permite teclado digitar cedilha no terminal
+RUN apt install -y locales && locale-gen en_US.UTF-8
 
+# Instalação de outros softwares necessarios
 RUN apt install -y git
 
-# Customizacoes no vscode
-RUN su ${CONTAINER_USERNAME} -c "code --install-extension formulahendry.terminal"
-RUN su ${CONTAINER_USERNAME} -c "code --install-extension peterjausovec.vscode-docker"
-COPY ./custom/settings.json /home/${CONTAINER_USERNAME}/.config/Code/User/settings.json
-RUN  chown ${CONTAINER_USERNAME}:${CONTAINER_USERNAME} /home/${CONTAINER_USERNAME}/.config/Code/User/settings.json
+# Cria usuario do container
+RUN useradd -m -s /bin/bash ${CONTAINER_USERNAME}
+RUN apt update -qq && apt install sudo
+RUN echo "${CONTAINER_USERNAME} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${CONTAINER_USERNAME}
+RUN chown -R ${CONTAINER_USERNAME}:${CONTAINER_USERNAME} /custom
 
 # Comandos de inicializacao do container
 COPY command.sh /usr/local/bin/
