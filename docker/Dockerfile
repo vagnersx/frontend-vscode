@@ -2,8 +2,9 @@ FROM ubuntu:18.04
 LABEL maintainer "Vagner dos Santos Xavier <vagner.xavier@serpro.gov.br>"
 
 ARG VSCODE_VERSION="1.30.1-1545156774"
+ARG CONTAINER_USERNAME
 
-ENV CONTAINER_USERNAME developer
+ENV CONTAINER_USERNAME $CONTAINER_USERNAME
 ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN true
 
@@ -21,6 +22,8 @@ RUN mkdir -p /custom/config /custom/extensions
 RUN code --install-extension formulahendry.terminal      --user-data-dir /custom/config --extensions-dir /custom/extensions
 RUN code --install-extension peterjausovec.vscode-docker --user-data-dir /custom/config --extensions-dir /custom/extensions
 COPY ./custom/settings.json /custom/config/User/settings.json
+RUN chmod -R 777 /custom
+
 # Permite teclado digitar cedilha no terminal
 RUN apt install -y locales && locale-gen en_US.UTF-8
 
@@ -31,7 +34,6 @@ RUN apt install -y git
 RUN useradd -m -s /bin/bash ${CONTAINER_USERNAME}
 RUN apt update -qq && apt install sudo
 RUN echo "${CONTAINER_USERNAME} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${CONTAINER_USERNAME}
-RUN chown -R ${CONTAINER_USERNAME}:${CONTAINER_USERNAME} /custom
 
 # Comandos de inicializacao do container
 COPY command.sh /usr/local/bin/

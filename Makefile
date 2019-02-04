@@ -4,7 +4,7 @@ IMAGE_NAME=vagnersx/frontend-vscode
 CONTAINER_NAME=`echo $(IMAGE_NAME) | sed 's/[/:]/_/g'`
 
 build: ./docker/Dockerfile
-	docker build -t $(IMAGE_NAME) ./docker
+	docker build -t $(IMAGE_NAME) --build-arg CONTAINER_USERNAME=developer ./docker
 
 # Executa com HOME compartilhada
 run:
