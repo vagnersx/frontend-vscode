@@ -1,28 +1,34 @@
 # make run
-docker run -itd --rm \
-	--name=frontend-vscode) \
-	-h frontend-vscode \
-	-e CODEPATH="`pwd | sed "s,^/home/${USER},/home/developer,"`" \
-	-e USERID=`id -u` \
-	-e USERNAME=${USER} \
-	-e DISPLAY \
-	-v /tmp/.X11-unix/:/tmp/.X11-unix \
-	-v /usr/share/icons:/usr/share/icons:ro \
-	-v frontend-vscode_custom:/custom \
-	-v ${HOME}:/home/developer \
-	vagnersx/frontend-vscode
+<pre>
+Docker version 18.06.1-ce
+--ipc host:  evita erro 'BadShmSeg (invalid shared segment parameter)'
 
-# make run-dev
 docker run -itd --rm \
 	--name=vagnersx_frontend-vscode \
+	--ipc host \
 	-h vagnersx_frontend-vscode \
 	-e CODEPATH="`pwd | sed "s,^/home/${USER},/home/developer/${USER},"`" \
 	-e USERID=`id -u` \
-	-e USERNAME=${USER} \
 	-e DISPLAY \
+	-v vagnersx_frontend-vscode:/home/developer/ \
+	-v ${HOME}:/home/developer/${USER} \
 	-v /tmp/.X11-unix/:/tmp/.X11-unix \
 	-v /usr/share/icons:/usr/share/icons:ro \
-	-v vagnersx_frontend-vscode_custom:/custom \
-	-v vagnersx_frontend-vscode_home_developer:/home/developer/ \
-	-v ${HOME}:/home/developer/${USER} \
 	vagnersx/frontend-vscode
+</pre>
+
+# clean
+<pre>
+docker run -it --rm \
+	--name=vagnersx_frontend-vscode \
+	--ipc host \
+	-h vagnersx_frontend-vscode \
+	-e CODEPATH="/home/developer" \
+	-e USERID=`id -u` \
+	-e DISPLAY \
+	-v /tmp/.X11-unix/:/tmp/.X11-unix \
+	vagnersx/frontend-vscode
+</pre>
+
+
+
