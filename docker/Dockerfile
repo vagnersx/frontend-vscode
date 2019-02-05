@@ -1,5 +1,5 @@
 FROM ubuntu:18.04
-LABEL maintainer "Vagner dos Santos Xavier <vagner.xavier@serpro.gov.br>"
+LABEL maintainer "Vagner dos Santos Xavier"
 
 ARG VSCODE_VERSION="1.30.1-1545156774"
 ARG CONTAINER_USERNAME="developer"
